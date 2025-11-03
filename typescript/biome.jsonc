@@ -50,7 +50,6 @@
         "noUnusedImports": {
           "fix": "safe",
           "level": "error",
-          "options": {},
         },
       },
       "nursery": {
