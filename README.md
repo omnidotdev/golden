@@ -1,5 +1,16 @@
 # 👑 Omni Golden
 
+> _All that is gold does not glitter,_<br/>
+> _Not all those who wander are lost;_<br/>
+> _The old that is strong does not wither,_<br/>
+> _Deep roots are not reached by the frost._<br/>
+> _From the ashes a fire shall be woken,_<br/>
+> _A light from the shadows shall spring;_<br/>
+> _Renewed shall be blade that was broken,_<br/>
+> _The crownless again shall be king._
+>
+> — **J.R.R. Tolkien**, _The Riddle of Strider_, _The Fellowship of the Ring_
+
 **The canonical baseline for how Omni code should look, behave, and be styled.**
 
 **Golden** defines Omni's unified configuration for formatters, linters, agents, and style conventions; the source of truth for consistency across every repository in the ecosystem.
