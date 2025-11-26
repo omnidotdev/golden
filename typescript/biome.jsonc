@@ -1,7 +1,7 @@
 // see https://biomejs.dev/reference/configuration
 {
   "$schema": "https://biomejs.dev/schemas/2.3.7/schema.json",
-	"vcs": {
+  "vcs": {
     "enabled": true,
     "clientKind": "git",
     "useIgnoreFile": true
@@ -10,9 +10,9 @@
     "actions": {
       "source": {
         "organizeImports": {
-					"level": "on",
+		  "level": "on",
           "options": {
-						"identifierOrder": "lexicographic",
+			"identifierOrder": "lexicographic",
             "groups": [
               { "type": false, "source": [":BUN:", ":NODE:"] },
               ":BLANK_LINE:",
