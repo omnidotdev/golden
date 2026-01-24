@@ -1,30 +1,46 @@
-# Omni Organization-Wide AI Agent Rules
+# Omni AI Agent Rules
+
+Canonical rules for AI agents working in Omni codebases. See [STYLEGUIDE.md](./STYLEGUIDE.md) for code style conventions.
 
 ## Global Rules
 
-- Never hallucinate paths, APIs, or env vars.
-- Make minimal, focused changes.
-- Match existing patterns and style.
-- Use Tilt (`tilt.dev`) as the single entrypoint; never suggest `npm run`, `cargo`, or direct commands.
-- Reference Tilt targets: `tilt up`, `tilt down`, `tilt trigger <service>`.
-- Do not modify `Tiltfile` unless explicitly requested.
+- Never hallucinate paths, APIs, or environment variables
+- Make minimal, focused changes
+- Match existing patterns and style
 
 ## Tilt Integration
 
-- All local dev runs through `tilt up`.
-- Agents suggesting commands must use Tilt targets.
-- Example: “Run `tilt trigger api` to restart the API.”
+See [ARCHITECTURE.md#tilt-orchestration](./ARCHITECTURE.md#tilt-orchestration) for Tilt commands.
 
-## TypeScript/JavaScript
+## TypeScript
 
-- Prefer `interface` over `type` for object shapes.
-- No `any`; use `unknown` or generics.
-- Enforce Biome via editor.
-- Use `bun` (never `npm`, `yarn`, or `pnpm`).
+Follow [typescript/STYLEGUIDE.md](./typescript/STYLEGUIDE.md). Key points:
+
+- Use `bun` (not npm, yarn, or pnpm)
+- Enforce [Biome](https://biomejs.dev) for formatting and linting
+- Enforce [Knip](https://knip.dev) for dead code and unused dependency detection
 
 ## Rust
 
-- Follow `clippy::all` and `clippy::pedantic`.
-- Always `#[derive(Debug, Clone)]` on structs/enums.
-- Return `Result<T, E>`; avoid panics.
-- Use `cargo watch` via Tilt only.
+Follow [rust/STYLEGUIDE.md](./rust/STYLEGUIDE.md). Key points:
+
+- Use [thiserror](https://docs.rs/thiserror) for library errors, [anyhow](https://docs.rs/anyhow) for application errors
+- Return `Result<T, E>`; avoid panics
+
+## Error Handling
+
+- Validate at system boundaries (user input, external APIs)
+- Use typed errors; avoid stringly-typed error messages
+- Never log secrets, tokens, PII, or full request bodies
+
+## Git
+
+Follow [STYLEGUIDE.md#git](./STYLEGUIDE.md#git).
+
+## Testing
+
+Follow [STYLEGUIDE.md#testing](./STYLEGUIDE.md#testing).
+
+## Dependencies
+
+Follow [STYLEGUIDE.md#dependencies](./STYLEGUIDE.md#dependencies).
