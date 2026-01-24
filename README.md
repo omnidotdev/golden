@@ -13,9 +13,9 @@
 
 **The canonical baseline for how Omni code should look, behave, and be styled.**
 
-**Golden** defines Omni's unified configuration for formatters, linters, agents, and style conventions; the source of truth for consistency across every repository in the ecosystem.
+**Golden** documents Omni's style conventions, architectural patterns, and agent rules. It's the source of truth for _how_ code should be written across the ecosystem.
 
-Each Omni project should import or reference these configs to ensure a consistent developer experience and codebase quality.
+For config files and project scaffolding (e.g. `tsconfig.json`, `Cargo.toml`), see [Omni Templates](https://docs.omni.dev/armory/templates).
 
 ## Philosophy
 
