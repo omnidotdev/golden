@@ -79,12 +79,13 @@ Omni uses Extended Conventional Commits (ECC), an Omni-coined term for standard 
 - **Format**: `type(scope): description`
 - **Types**: `feature` (or `feat`), `fix`, `documentation` (or `docs`), `style`, `refactor`, `test`, `chore`, `build`, `ci`, `performance` (or `perf`), `revert`
 - **Branch naming**: `feature/`, `fix/`, `chore/` prefixes
-- **Atomic commits**: one logical change per commit
+- **Atomic commits**: one focused, logical change per commit
 
 Optionally enforce with [commitlint](https://commitlint.js.org) + [husky](https://typicode.github.io/husky).
 
 ## Dependencies
 
+- Prefer standard library when sufficient
 - **[Renovate](https://docs.renovatebot.com)** for automated dependency updates
 - Pin versions in lockfiles
 - Audit regularly (`bun audit`, `cargo deny`)
