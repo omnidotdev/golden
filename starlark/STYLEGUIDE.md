@@ -48,13 +48,7 @@ register_service(
 
 ## Metarepo Pattern
 
-Auto-discover services in `{path}/services/*/Tiltfile`:
-
-```python
-if values.get("metarepo"):
-    services_dir = "%s/services" % base_path
-    # Discover and include sub-Tiltfiles
-```
+See [ARCHITECTURE.weaver.md#service-discovery](../ARCHITECTURE.weaver.md#service-discovery) for the service discovery pattern.
 
 ## Discouraged
 
