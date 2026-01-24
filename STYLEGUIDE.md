@@ -1,0 +1,95 @@
+# Omni Code Style Guide
+
+Canonical baseline for all Omni code. Language-specific guides:
+
+- [`typescript/STYLEGUIDE.md`](./typescript/STYLEGUIDE.md)
+- [`rust/STYLEGUIDE.md`](./rust/STYLEGUIDE.md)
+- [`starlark/STYLEGUIDE.md`](./starlark/STYLEGUIDE.md)
+
+Language-specific guides take precedence when they conflict with this file.
+
+## Hierarchy
+
+1. This file (global rules)
+2. Language guides (per folder)
+3. Tool configs ([Biome](https://biomejs.dev), [rustfmt](https://rust-lang.github.io/rustfmt), [Tilt](https://tilt.dev))
+4. Project overrides (only when justified)
+
+## Principles
+
+- **Consistency over preference**: match existing patterns
+- **Small, composable units**: small files, small functions
+- **Explicit over implicit**: no magic behavior
+- **Predictable by default**: standard patterns first
+
+## Structure
+
+Group by feature/domain, not type:
+
+```
+src/
+  billing/
+  auth/
+tests/
+scripts/
+```
+
+Prefer small files. If a file is getting unwieldy, split it.
+
+## Comments
+
+- Sentence case: `// Ensure database exists.`
+- Wrap code in backticks: `// Parse \`userId\` param`
+- TODO format: `// TODO: description` or `// TODO(assignee): description` or `// TODO(assignee1,assignee2): description`
+- Explain **why**, not what
+  - Avoid "Function that...", "Hook that...", "Component that..."
+  - Use singular imperative: `// Parse a timestamp.` not `// Parses a timestamp.`
+
+## Testing
+
+- Fast, deterministic tests
+- Integration tests at boundaries, unit tests for tricky logic
+- Single command per repo: `bun test`, `cargo test`
+- Arrange-Act-Assert structure
+- Test naming: `describe` the unit, `it` the behavior
+- Mock at boundaries (external APIs, databases), not internal modules
+
+## API Design
+
+- GraphQL-first: schema as the contract, leverage introspection
+- Consistent error handling with proper error codes and extensions
+- Document schemas with descriptions; keep them self-documenting
+- REST only when GraphQL doesn't fit (webhooks, file uploads, health checks)
+
+## Accessibility
+
+- Semantic HTML first; ARIA only when needed
+- Keyboard navigable; visible focus states
+- Sufficient color contrast; don't rely on color alone
+
+## Tooling
+
+Formatting and linting are required. Use configs from [templates](https://github.com/omnidotdev/templates).
+
+## Git
+
+Omni uses Extended Conventional Commits (ECC), an Omni-coined term for standard [Conventional Commits](https://www.conventionalcommits.org/) with full-word aliases for readability.
+
+- **Default branch**: `master`
+- **Format**: `type(scope): description`
+- **Types**: `feature` (or `feat`), `fix`, `documentation` (or `docs`), `style`, `refactor`, `test`, `chore`, `build`, `ci`, `performance` (or `perf`), `revert`
+- **Branch naming**: `feature/`, `fix/`, `chore/` prefixes
+- **Atomic commits**: one logical change per commit
+
+Optionally enforce with [commitlint](https://commitlint.js.org) + [husky](https://typicode.github.io/husky).
+
+## Dependencies
+
+- **[Renovate](https://docs.renovatebot.com)** for automated dependency updates
+- Pin versions in lockfiles
+- Audit regularly (`bun audit`, `cargo deny`)
+- Justify new dependencies; prefer well-maintained packages
+
+## Workflow
+
+See [`CONTRIBUTING.md`](https://github.com/omnidotdev/.github/blob/master/CONTRIBUTING.md) for PR etiquette and contribution rules.
