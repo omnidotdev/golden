@@ -7,6 +7,7 @@ Canonical rules for AI agents working in Omni codebases. See [STYLEGUIDE.md](./S
 - Never hallucinate paths, APIs, or environment variables
 - Make minimal, focused changes
 - Match existing patterns and style
+- Code comments must never end with trailing punctuation (does not apply to doc comments like `///`, JSDoc, TSDoc, etc.)
 
 ## Git
 
