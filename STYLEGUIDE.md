@@ -80,6 +80,7 @@ Omni uses Extended Conventional Commits (ECC), an Omni-coined term for standard 
 - **Types**: `feature` (or `feat`), `fix`, `documentation` (or `docs`), `style`, `refactor`, `test`, `chore`, `build`, `ci`, `performance` (or `perf`), `revert`
 - **Branch naming**: `feature/`, `fix/`, `chore/` prefixes
 - **Atomic commits**: one focused, logical change per commit
+- **No `!` suffix**: do not use `feat!:` or similar for breaking changes. Document breaking changes in PR descriptions and changesets instead
 
 Optionally enforce with [commitlint](https://commitlint.js.org) + [husky](https://typicode.github.io/husky).
 
@@ -94,3 +95,5 @@ Optionally enforce with [commitlint](https://commitlint.js.org) + [husky](https:
 ## Workflow
 
 See [`CONTRIBUTING.md`](https://github.com/omnidotdev/.github/blob/master/CONTRIBUTING.md) for PR etiquette and contribution rules.
+
+See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for project structure and orchestration patterns.
