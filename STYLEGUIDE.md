@@ -38,12 +38,12 @@ Prefer small files. If a file is getting unwieldy, split it.
 
 ## Comments
 
-- Sentence case: `// Ensure database exists.`
+- Sentence case, no trailing punctuation: `// Ensure database exists`
 - Wrap code in backticks: `// Parse \`userId\` param`
 - TODO format: `// TODO: description` or `// TODO(assignee): description` or `// TODO(assignee1,assignee2): description`
 - Explain **why**, not what
   - Avoid "Function that...", "Hook that...", "Component that..."
-  - Use singular imperative: `// Parse a timestamp.` not `// Parses a timestamp.`
+  - Use singular imperative: `// Parse a timestamp` not `// Parses a timestamp`
 
 ## Testing
 

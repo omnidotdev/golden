@@ -14,6 +14,7 @@ Canonical rules for AI agents working in Omni codebases. See [STYLEGUIDE.md](./S
 - Follow Extended Conventional Commits (ECC) per [STYLEGUIDE.md#git](./STYLEGUIDE.md#git)
 - Never add `Co-Authored-By` lines to commits
 - Default branch: `master`
+- Breaking changes do not require a major semver bump in changesets
 
 ## Pull Requests
 
