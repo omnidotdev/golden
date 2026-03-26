@@ -14,6 +14,11 @@ Canonical rules for AI agents working in Omni codebases. See [STYLEGUIDE.md](./S
 - Never add `Co-Authored-By` lines to commits
 - Default branch: `master`
 
+## Pull Requests
+
+- Use the org PR template when creating PRs
+- Do not invent custom PR body formats
+
 ## TypeScript
 
 Follow [typescript/STYLEGUIDE.md](./typescript/STYLEGUIDE.md). Key points:
@@ -61,9 +66,11 @@ Products must boot successfully with only required env vars set. Optional integr
 
 All inter-service events follow the [CloudEvents](https://cloudevents.io) spec, routed through Vortex via `@omnidotdev/providers`.
 
-- Source format: `omni.<product>` (e.g. `omni.vortex`, `omni.beacon`)
+- Source format: `omni.<product>` (identifies the product, not the deployment unit)
 - Event type format: `<product>.<entity>.<action>` (e.g. `aether.subscription.changed`)
 - Always use `createEventsProvider` from `@omnidotdev/providers`, never publish to Iggy directly
+- Set `source` once at provider init in `src/lib/providers/index.ts`; all `events.emit()` calls inherit it
+- Event schemas are registered in the Vortex seed file or in-service via `registerSchemas()` at boot
 
 ## Testing
 
