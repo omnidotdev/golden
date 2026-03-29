@@ -44,6 +44,7 @@ Follow [rust/STYLEGUIDE.md](./rust/STYLEGUIDE.md). Key points:
 
 ## Drizzle
 
+- Table names must be **singular** (e.g. `product`, `order`, `store_setting`), not plural
 - Never manually edit migration files, snapshots, or journal
 - No custom SQL migrations, all migrations must go through `bun db:generate`
 - If a CHECK constraint, index, or other DDL is needed, define it in the Drizzle schema and let `db:generate` produce the migration
