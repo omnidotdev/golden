@@ -8,6 +8,8 @@ Canonical rules for AI agents working in Omni codebases. See [STYLEGUIDE.md](./S
 - Make minimal, focused changes
 - Match existing patterns and style
 - Code comments must never end with trailing punctuation (does not apply to doc comments like `///`, JSDoc, TSDoc, etc.)
+- No em dashes in any output (use "to", commas, or parentheses instead)
+- Never mention competitors by name
 
 ## Git
 
