@@ -39,6 +39,7 @@ Prefer small files. If a file is getting unwieldy, split it.
 ## Comments
 
 - Sentence case, no trailing punctuation: `// Ensure database exists`
+- Keep inline comments on a single line, do not wrap
 - Wrap code in backticks: `// Parse \`userId\` param`
 - TODO format: `// TODO: description` or `// TODO(assignee): description` or `// TODO(assignee1,assignee2): description`
 - Explain **why**, not what
