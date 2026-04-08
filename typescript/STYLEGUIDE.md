@@ -52,6 +52,7 @@ Avoid wildcard imports except for namespaced libraries (e.g. Radix primitives).
 ## Naming
 
 - **PascalCase**: Components, types
+  - Preserve acronyms/initialisms in uppercase: `CTABanner`, `SEOMetadata`, `URLParser` (not `CtaBanner`, `SeoMetadata`, `UrlParser`)
 - **camelCase**: Variables, functions, hooks
 - **SCREAMING_SNAKE**: True constants (exported only)
 
