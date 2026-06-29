@@ -55,6 +55,7 @@ Avoid wildcard imports except for namespaced libraries (e.g. Radix primitives).
   - Preserve acronyms/initialisms in uppercase: `CTABanner`, `SEOMetadata`, `URLParser` (not `CtaBanner`, `SeoMetadata`, `UrlParser`)
 - **camelCase**: Variables, functions, hooks
 - **SCREAMING_SNAKE**: True constants (exported only)
+- **Booleans**: prefix with a copula/auxiliary so the name reads as a yes/no question - `is`, `are`, `has`, `have`, `should`, `can`, `will`, `did` (e.g. `isPublic`, `areLoaded`, `hasAccess`, `shouldRetry`, `canEdit`). Applies to variables, props, state, and boolean-returning functions. Avoid bare nouns/adjectives (`public`, `loaded`, `access`) and negated names (`isNotPublic` - prefer `isPublic` and negate at use).
 
 File names:
 
