@@ -52,6 +52,24 @@ Follow [rust/STYLEGUIDE.md](./rust/STYLEGUIDE.md). Key points:
 - If a CHECK constraint, index, or other DDL is needed, define it in the Drizzle schema and let `db:generate` produce the migration
 - Avoid `pgEnum` for business logic (use `text()` with app-level validation)
 
+## GraphQL
+
+The canonical GraphQL stack for every project on this machine, not only repos under `~/projects/omni`. See [STYLEGUIDE.md#api-design](./STYLEGUIDE.md#api-design).
+
+**Server (API): database-first via [Postgraphile v5](https://postgraphile.org).** Never hand-write the schema (no Pothos, Nexus, or other code-first builders).
+
+- Mount with Elysia + `@elysiajs/graphql-yoga`; the schema comes from a Postgraphile preset in `src/lib/config/graphile.config.ts` (`PostGraphileAmberPreset` + `PgSimplifyInflectionPreset` + `PostGraphileConnectionFilterPreset`)
+- Generate the schema from the Drizzle/Postgres tables via `bun graphql:generate` (`src/scripts/generateGraphqlSchema.ts`); always commit `schema.graphql` (it feeds client codegen). Run after `db:generate`/migrate; never edit the output. Pre-compiling an executable schema (`schema.executable.ts` via `exportSchema`) is recommended for pure-CRUD APIs (faster boot), but APIs with custom Grafast plans that close over runtime singletons should call `makeSchema(preset)` at boot instead, rather than wrapping every plan in `EXPORTABLE`
+- Custom fields, mutations, and side effects go through Postgraphile/Grafast, not standalone resolvers: `makeExtendSchemaPlugin` for custom fields and mutations, Envelop `onExecute`/`onExecuteDone` hooks for post-mutation side effects (e.g. CloudEvents), `wrapPlans` for query filtering, smart tags (`jsonPgSmartTags`) to hide mutations. Plugins live in `src/lib/graphql/plugins/`
+- Inject auth into the GraphQL context (e.g. `@envelop/generic-auth`); never resolve auth per-field by hand
+
+**Client (App): [TanStack Query](https://tanstack.com/query) + [graphql-request](https://github.com/jasonkuhrt/graphql-request) + [graphql-codegen](https://the-guild.dev/graphql/codegen).** Never urql or Apollo Client.
+
+- Write operations as `.graphql` documents under `src/lib/graphql/`; codegen (`codegen.config.ts`) emits React Query hooks to `src/generated/graphql.ts`
+- A custom `graphqlFetch` wrapper (`src/lib/graphql/graphqlFetch.ts`) attaches auth; wrap generated hooks with query-options helpers in `src/options/`
+
+**Realtime: GraphQL subscriptions.** Normalize client realtime onto GraphQL. Expose subscriptions server-side via Postgraphile LISTEN/NOTIFY using the native v5 `PgSubscriber` (from `postgraphile/adaptors/pg`) plus the grafast `listen` step (note: the `@graphile/pg-pubsub` package is Graphile v4 and does NOT work with v5). graphql-yoga serves subscriptions over SSE by default, so consume them client-side with [`graphql-sse`](https://github.com/enisdenjo/graphql-sse) (use `graphql-ws` only if a WebSocket transport is explicitly mounted). Prefer subscriptions over ad-hoc WebSockets. Reserve raw WebSockets and LiveKit data channels for media or binary transport, and CloudEvents via Vortex for server-to-server events.
+
 ## Infrastructure
 
 - All infrastructure operations must be reproducible and GitOps-friendly

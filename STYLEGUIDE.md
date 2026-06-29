@@ -58,6 +58,8 @@ Prefer small files. If a file is getting unwieldy, split it.
 ## API Design
 
 - GraphQL-first: schema as the contract, leverage introspection
+- Server is database-first via Postgraphile v5 (never code-first/Pothos); clients use graphql-request + graphql-codegen + TanStack Query (never urql/Apollo). See [AGENTS.md#graphql](./AGENTS.md)
+- Client realtime uses GraphQL subscriptions (Postgraphile LISTEN/NOTIFY via the native v5 PgSubscriber, served over SSE by graphql-yoga and consumed with graphql-sse); reserve raw WebSockets/LiveKit for media transport and CloudEvents for server-to-server events
 - Consistent error handling with proper error codes and extensions
 - Document schemas with descriptions; keep them self-documenting
 - REST only when GraphQL doesn't fit (webhooks, file uploads, health checks)
