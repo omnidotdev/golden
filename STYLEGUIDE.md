@@ -64,6 +64,14 @@ Prefer small files. If a file is getting unwieldy, split it.
 - Document schemas with descriptions; keep them self-documenting
 - REST only when GraphQL doesn't fit (webhooks, file uploads, health checks)
 
+## URLs
+
+- **Always lowercase**: paths, slugs, query-parameter keys, query-parameter values, and anchors. Never let camelCase or human display strings leak into a URL.
+- **Path segments and slugs**: kebab-case (`/feedback-board`, `/in-progress`).
+- **Query-parameter keys**: snake_case (`?excluded_statuses=…&sort_by=created_at&page_size=20`), not camelCase (`excludedStatuses`). camelCase introduces uppercase characters, which breaks the lowercase rule and reads as code leaking into the URL.
+- **Query-parameter values**: stable lowercase identifiers, not display strings. Use a status `name` like `completed` / `in_progress`, never `Completed` or `In Progress`. For multiple values, repeat the key or comma-separate lowercase identifiers (`?excluded_statuses=completed,archived`).
+- **Anchors/fragments**: kebab-case lowercase (`#getting-started`).
+
 ## Accessibility
 
 - Semantic HTML first; ARIA only when needed
