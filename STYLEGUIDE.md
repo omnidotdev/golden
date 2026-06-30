@@ -71,6 +71,7 @@ Prefer small files. If a file is getting unwieldy, split it.
 - **Query-parameter keys**: snake_case (`?excluded_statuses=…&sort_by=created_at&page_size=20`), not camelCase (`excludedStatuses`). camelCase introduces uppercase characters, which breaks the lowercase rule and reads as code leaking into the URL.
 - **Query-parameter values**: stable lowercase identifiers, not display strings. Use a status `name` like `completed` / `in_progress`, never `Completed` or `In Progress`. For multiple values, repeat the key or comma-separate lowercase identifiers (`?excluded_statuses=completed,archived`).
 - **Anchors/fragments**: kebab-case lowercase (`#getting-started`).
+- **Scope**: this governs URLs and params your app owns (its own routes, search state, and calls to Omni-internal APIs, which should also use snake_case keys). **External/standard params keep their upstream name**: OAuth/OIDC (`client_id`, `redirect_uri`, `post_logout_redirect_uri`, `id_token_hint`), provider callbacks (`setup_action`, `installation_id`), and third-party API query params follow the external spec, not this convention. When a value also feeds a server-side filter (e.g. a GraphQL `displayName` vs `name`), change both together so the URL identifier and the query stay in sync.
 
 ## Accessibility
 
