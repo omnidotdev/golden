@@ -11,6 +11,12 @@ Canonical rules for AI agents working in Omni codebases. See [STYLEGUIDE.md](./S
 - No em dashes in any output (use "to", commas, or parentheses instead)
 - Never mention competitors by name
 
+## Documentation
+
+- Keep docs in sync with the app: when a change alters user-facing behavior, features, commands, APIs, config, or flows, update the corresponding docs in the same change (product docs, README, a docs site/service, env templates). Applies to every project (Omni services, ThreadsCrush, Thraddies, and the rest)
+- If docs covering the changed area exist but you can't update them, say so explicitly rather than leaving them silently stale
+- This does not override the "never commit `docs/` without explicit consent" rule: make the doc updates in your working changes and surface them for review
+
 ## Git
 
 - Follow Extended Conventional Commits (ECC) per [STYLEGUIDE.md#git](./STYLEGUIDE.md#git)
