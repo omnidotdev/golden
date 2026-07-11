@@ -109,6 +109,13 @@ Common divergence points, normalized:
    */
   ````
 
+## Libraries (publishable packages)
+
+- **Externalize every peer/optional dependency** (and its subpaths) in the bundler config so it is never inlined into the published artifact. If it is declared in `peerDependencies` (or `peerDependenciesMeta.optional`), it MUST be in the bundler's `external` list. The consumer resolves it; you do not ship it.
+- **Separate bundles need their own `external` config.** Web Worker chunks (`new Worker(new URL(...))`), and any secondary entry, are bundled independently. Add the same external rule to `worker.rollupOptions.external` (Vite) etc., not just the top-level `rollupOptions.external`.
+- **A passing build does NOT prove externalization** - an inlined dependency still compiles. Verify after building: check the output/asset sizes and confirm heavy deps remain as `import("pkg")` / bare imports in the emitted files. (Real incident: a `68 MB` ONNX worker asset shipped to every consumer because `onnxruntime-web` was an optional peer dep but absent from the `external` list; the build was green the whole time.)
+- Keep `external` as a single shared predicate reused across main + worker configs so the lists cannot drift.
+
 ## Discouraged
 
 - `any` without justification
