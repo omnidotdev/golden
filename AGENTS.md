@@ -10,12 +10,15 @@ Canonical rules for AI agents working in Omni codebases. See [STYLEGUIDE.md](./S
 - Code comments must never end with trailing punctuation (does not apply to doc comments like `///`, JSDoc, TSDoc, etc.)
 - No em dashes in any output (use "to", commas, or parentheses instead)
 - Never mention competitors by name
+- Terminology: use "whitelist"/"blacklist", never "allowlist"/"denylist" (applies to code identifiers, env vars, comments, and prose)
 
 ## Documentation
 
 - Keep docs in sync with the app: when a change alters user-facing behavior, features, commands, APIs, config, or flows, update the corresponding docs in the same change (product docs, README, a docs site/service, env templates). Applies to every project (Omni services, ThreadsCrush, Thraddies, and the rest)
 - If docs covering the changed area exist but you can't update them, say so explicitly rather than leaving them silently stale
 - This does not override the "never commit `docs/` without explicit consent" rule: make the doc updates in your working changes and surface them for review
+- Order doc sections by the user journey, not by feature grouping or internal model. Sequence pages the way a real user sets up and adopts the product: intro, then getting started, then the setup a user does first (profile, preferences, and anything matching/output depends on), then the core feature loops, then advanced/secondary features, then paid tiers, with reference/utility pages (settings, safety, troubleshooting) pinned last. A feature page should not precede the setup it relies on. This applies to product/end-user and onboarding docs; for reference-heavy or API docs, organize by document type (tutorial / how-to / reference / explanation, per [Diátaxis](https://diataxis.fr)) rather than forcing a single linear journey, and keep reference entries grouped/alphabetized
+- When you reorder a docs nav/manifest (e.g. `meta.json`), also reorder any in-page lists that mirror it (intro "Features" lists, overview tables) so the two stay consistent
 
 ## Git
 
@@ -90,6 +93,14 @@ Products must boot successfully with only required env vars set. Optional integr
 - Never crash for missing optional config
 - Use sensible defaults (free tier, noop providers, stdout fallback)
 - Document which env vars are required vs optional in `.env.local.template`
+
+## Access-gated features
+
+When a feature is intentionally restricted to a subset of accounts (whitelist, admin/owner-only, beta testers, dev-mode or config gate), make the restriction visible in the UI to the users who can see it, do not ship it silently gated.
+
+- Show an admin-style indicator on the gated surface: a clear label or badge such as "Admin only", "Restricted", or "Beta", so it is obvious the surface is not shown to all users
+- Rationale: an unlabeled hidden feature is easy to forget it exists, accidentally widen to everyone, or misjudge in review. The label makes the limited visibility explicit
+- The gate itself is enforced server-side (the label is UX, never the access control), and default to hidden when the gate is unset
 
 ## CloudEvents
 
