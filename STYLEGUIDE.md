@@ -79,6 +79,10 @@ Prefer small files. If a file is getting unwieldy, split it.
 - Keyboard navigable; visible focus states
 - Sufficient color contrast; don't rely on color alone
 
+## Copy
+
+- **Count labels agree in number**: any user-facing label that shows a count followed by a noun must pluralize the noun by the count ("1 repository", "2 repositories", "0 repositories"). Never hardcode a static plural after a count (`{n} repositories` reads "1 repositories" when the count is 1). Use a shared `pluralize(count, singular, plural?)` helper that returns only the noun (regular nouns append "s"; pass an explicit plural for irregulars like repository -> repositories). Applies to every Omni UI (repositories, members, branches, commits, comments, relationships, and so on).
+
 ## Tooling
 
 Formatting and linting are required. Use configs from [templates](https://github.com/omnidotdev/templates).
