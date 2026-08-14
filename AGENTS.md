@@ -7,6 +7,7 @@ Canonical rules for AI agents working in Omni codebases. See [STYLEGUIDE.md](./S
 - Never hallucinate paths, APIs, or environment variables
 - Make minimal, focused changes
 - Match existing patterns and style
+- When scaffolding a new service/app/repo, start from the matching `template-*` in `~/projects/omni/_meta/templates/` (that directory is the source of truth: `ls` it for the current set; the names describe the stack) rather than hand-rolling or ad-hoc copying another product. If none fits, mirror the closest existing fleet service and say so
 - Code comments must never end with trailing punctuation (does not apply to doc comments like `///`, JSDoc, TSDoc, etc.)
 - No em dashes in any output (use "to", commas, or parentheses instead)
 - Never mention competitors by name
