@@ -59,9 +59,10 @@ Avoid wildcard imports except for namespaced libraries (e.g. Radix primitives).
 
 File names:
 
-- Components: `ComponentName.tsx`
+- Multi-word names use **camelCase**, never kebab-case: `nordicPerformance.ts`, `stripeWebhook.ts` (not `nordic-performance.ts`, `stripe-webhook.ts`)
+- Components: `ComponentName.tsx` (PascalCase, matching the component)
 - Hooks: `useThing.ts`
-- Utils: `thing.ts`
+- Utils: `thing.ts` / `thingHelper.ts`
 - Tests: `*.test.ts`
 
 ## Error Handling
