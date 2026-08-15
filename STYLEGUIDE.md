@@ -73,6 +73,10 @@ Prefer small files. If a file is getting unwieldy, split it.
 - **Anchors/fragments**: kebab-case lowercase (`#getting-started`).
 - **Scope**: this governs URLs and params your app owns (its own routes, search state, and calls to Omni-internal APIs, which follow the same camelCase-key convention). **External/standard params keep their upstream name**: OAuth/OIDC (`client_id`, `redirect_uri`, `post_logout_redirect_uri`, `id_token_hint`), provider callbacks (`setup_action`, `installation_id`), and third-party API query params follow the external spec, not this convention. When a value also feeds a server-side filter (e.g. a GraphQL `displayName` vs `name`), change both together so the URL identifier and the query stay in sync.
 
+## CSS
+
+- **Hex color codes are always lowercase**: `#f43f5e`, never `#F43F5E`. Applies everywhere colors are authored: stylesheets, CSS/Tailwind theme tokens, inline styles, W3C design tokens, and brand color data (e.g. omni-api `brand.primary`). Shorthand and 8-digit alpha hex follow the same rule (`#0f0`, `#f43f5eaa`). Prefer a named design token or CSS variable over a raw literal; when a literal hex is unavoidable, lowercase it.
+
 ## Accessibility
 
 - Semantic HTML first; ARIA only when needed
