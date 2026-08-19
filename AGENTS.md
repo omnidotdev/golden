@@ -1,6 +1,6 @@
 # Omni AI Agent Rules
 
-Canonical rules for AI agents working in Omni codebases. See [STYLEGUIDE.md](./STYLEGUIDE.md) for code style conventions. See [ARCHITECTURE.md](./ARCHITECTURE.md) for project structure patterns.
+Canonical rules for AI agents working in Omni codebases. See [STYLEGUIDE.md](./STYLEGUIDE.md) for code style conventions. See [ARCHITECTURE.md](./ARCHITECTURE.md) for project structure patterns. See [URL-GRAMMAR.md](./URL-GRAMMAR.md) for the platform-wide URL convention (`@handle` workspaces, `~` admin sentinel).
 
 ## General
 
