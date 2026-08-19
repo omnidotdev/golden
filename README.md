@@ -15,7 +15,7 @@
 
 **Golden** documents Omni's style conventions, architectural patterns, and agent rules. It's the source of truth for _how_ code should be written across the ecosystem.
 
-For config files and project scaffolding (e.g. `tsconfig.json`, `Cargo.toml`), see [Omni Templates](https://docs.omni.dev/armory/templates).
+For config files and project scaffolding (e.g. `tsconfig.json`, `Cargo.toml`), see [Omni Templates](https://docs.omni.dev/realms/armory/templates).
 
 ## Philosophy
 
