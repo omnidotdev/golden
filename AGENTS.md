@@ -12,6 +12,7 @@ Canonical rules for AI agents working in Omni codebases. See [STYLEGUIDE.md](./S
 - No em dashes in any output (use "to", commas, or parentheses instead)
 - Never mention competitors by name
 - Terminology: use "whitelist"/"blacklist", never "allowlist"/"denylist" (applies to code identifiers, env vars, comments, and prose)
+- Every Omni product must have a UNIQUE emoji icon. The icon is how a product is recognized at a glance everywhere it surfaces (nav, docs, footers, launchers, the "Made with `<symbol>` by Omni" credit), so two products sharing an emoji makes them indistinguishable. The catalog is the SSOT (`api-stack/services/api/src/lib/db/catalog/products.ts`) and uniqueness is locked by a test (`src/__tests__/catalog/products.test.ts`); when adding a product or picking an icon, pick one no other product uses. Non-catalog products (internal tools, e.g. bifrost) must also not reuse a catalog product's emoji
 
 ## Documentation
 
