@@ -104,6 +104,16 @@ When a feature is intentionally restricted to a subset of accounts (whitelist, a
 - Rationale: an unlabeled hidden feature is easy to forget it exists, accidentally widen to everyone, or misjudge in review. The label makes the limited visibility explicit
 - The gate itself is enforced server-side (the label is UX, never the access control), and default to hidden when the gate is unset
 
+## Destructive actions
+
+Any destructive or irreversible user action must be guarded by an explicit confirmation step before the mutation fires. A single click (or misclick) must never permanently delete, remove, revoke, discard, or overwrite user data.
+
+- Applies to: delete/remove/revoke/discard/reset/overwrite/leave/disconnect, hard AND soft deletes (a soft delete still disappears from the user's view), bulk actions, and anything the user cannot trivially undo in the UI
+- Confirm with a dialog, not a native `window.confirm`: use the shared `ConfirmDialog` primitive where a product has one (e.g. crystal-app `src/components/ui/confirm-dialog.tsx`), otherwise build one on the product's dialog primitive. Name the specific target in the copy ("Delete tier \"Gold\"?") and state that it cannot be undone
+- The confirm button carries the destructive styling (e.g. `variant="destructive"`), the dialog cannot be dismissed while the action is in flight, and the action stays disabled until confirmed
+- This is UX, not authorization: still enforce the actual permission server-side
+- When adding any new destructive action, wire the confirmation in the same change; do not ship the unguarded action first
+
 ## CloudEvents
 
 All inter-service events follow the [CloudEvents](https://cloudevents.io) spec, routed through Vortex via `@omnidotdev/providers`.
