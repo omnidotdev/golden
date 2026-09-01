@@ -3,8 +3,12 @@
 Canonical, platform-wide URL convention for every Omni product. One grammar,
 inherited from `_meta/templates/template-tanstack-start`, not reinvented per app.
 
-**Status:** Approved 2026-08-18. Supersedes the design draft
-`plans/2026-06-12-omni-url-grammar-design.md`.
+**Status:** Approved 2026-08-18; reaffirmed and rolled out fleet-wide 2026-09-01.
+Supersedes the design draft `plans/2026-06-12-omni-url-grammar-design.md`.
+
+The canonical shape is `@{$workspaceSlug}` for the handle segment and the `~`
+sentinel for admin, inherited from `_meta/templates/template-tanstack-start` and
+applied uniformly by every product.
 
 ---
 
@@ -65,7 +69,13 @@ owned by this grammar.
    system area" (Unix `~` = home; Bitbucket `~user`). It is an RFC 3986
    unreserved character (safe unencoded everywhere) and is **not** a TanStack
    Router token; if a raw `~` directory ever confuses the route generator,
-   escape it as `[~]`.
+   escape it as `[~]`. The sentinel applies **uniformly at every resource
+   level**: a resource nested under the handle keeps its own admin behind `~`
+   too (`/@acme/roadmap/~/settings`), never flat (`/@acme/roadmap/settings`).
+   One rule, no exceptions. Reserving `~` at each level up front is the cheap,
+   reversible move: it costs a slightly longer admin URL (which nobody shares)
+   and guarantees no future admin route or free-form child slug ever forces a
+   link-breaking migration to carve the sentinel in later.
 
 5. **Items carry a self-describing key.** `/@acme/my-board/API-42-login-bug`,
    where `API-42` (prefix + per-project number) is the canonical key and the
@@ -80,7 +90,71 @@ owned by this grammar.
 7. **Global app pages have no handle.** `/explore`, `/pricing`, `/login`,
    `/-/status` style system pages live at the root without an `@`.
 
+8. **User slugs are bare and start alphanumeric; the platform owns every
+   sigil-prefixed segment.** A project/board/store is `@acme/roadmap`, never
+   `@acme/@roadmap` or `@acme/+roadmap`. `@` marks a globally-unique registered
+   identity (the workspace/org) and appears **exactly once** per URL; a project
+   slug is only unique within its workspace, so it carries no `@`. Enforce
+   fleet-wide that a user-minted slug must begin with a letter or number: this
+   keeps the primary resource bare and brandable today, keeps `~` safe forever,
+   and reserves all leading-punctuation space so any future typed namespace
+   (`&team`, `+doc`) slots in with no link-breaking migration. `~` is the only
+   such platform sigil in use today.
+
+9. **Org is 1:1 with workspace; the canonical route param is `workspaceSlug`.**
+   A workspace is a polymorphic Omni org (personal or brand account), so the
+   `@handle` IS the workspace, one level, never an org that contains nested
+   sub-workspaces. The handle route segment is `@{$workspaceSlug}` (with braces,
+   for the TanStack route generator), fleet-wide. Do NOT spell it `@$orgSlug`,
+   `@{$orgSlug}`, or `@{$username}`. Nested resources under the workspace carry
+   their own descriptive param (`$storeSlug`, `$boardSlug`, ...), never a second
+   workspace level. Renaming an existing product's handle param to
+   `workspaceSlug` is URL-invariant (only the code identifier changes, not the
+   `/@acme/...` URL), so it needs no redirect.
+
 ---
+
+## Why the `~` sentinel: the core trade-off
+
+Layer 3 (a user-minted slug vs a fixed admin route at the same level) is the only
+hard collision, and there are exactly three ways to resolve it without a runtime
+blocklist. You can have at most two of these three properties:
+
+| Want | Cost |
+|---|---|
+| flat user slugs (`/@acme/roadmap`) + no blocklist | needs a **sentinel** (our `~`) |
+| flat user slugs + no sentinel | needs a **reserved-word blocklist** |
+| no sentinel + no blocklist | user slugs **can't be flat** (nest them under a code-owned collection, e.g. `/@acme/boards/roadmap`) |
+
+Omni picks **flat slugs + `~`**, for two reasons:
+
+1. **We want flat, brandable resource URLs.** The products that let a user mint a
+   resource directly under the handle are exactly the ones whose URL is public and
+   brand-facing: a git repo (`/@owner/repo`, the universal forge convention), a
+   storefront, a public roadmap. `/@acme/roadmap` beats `/@acme/boards/roadmap`
+   for the links people actually paste.
+2. **The sentinel's cost lands only where nobody looks.** `~` prefixes admin and
+   system routes, which are never shared. The public spine people do share
+   (`/@acme`, `/@acme/roadmap`) is already sentinel-free. So we get the brandable
+   flat slug in the shared links AND no maintained blocklist, and the only oddness
+   hides in admin URLs.
+
+**Industry framing.** GitHub takes "flat slugs + blocklist" (`/user/repo`, with a
+reserved-word list). YouTube takes "no sentinel + no flat slugs": under a
+`/@channel` handle it exposes only a *closed, code-owned* set of tabs
+(`/videos`, `/shorts`, `/about`) with no custom slugs, puts real user content at
+global ID routes (`/watch?v=…`), and runs creator admin on a separate host
+(`studio.youtube.com`). YouTube never hits Layer 3 because it never allows a
+human-named resource flat under the handle. Omni does want that, so it pays for it
+with `~`.
+
+**This is reversible; it is not a one-way door** (unlike Rule 2). Dropping `~` from
+admin is free later — admin URLs are never shared, so no redirects. Adding
+collection segments to user slugs later is a standard "301 forever" migration. In
+both directions the `/@handle` identity spine (the part in bios and bookmarks)
+never moves, so the durable anchor is safe. The one discipline that keeps the door
+open: keep every shared resource link anchored under `@handle` with a
+self-describing key, never a raw UUID and never a feature-first path.
 
 ## Decisions we did NOT take, and why
 
@@ -109,6 +183,11 @@ owned by this grammar.
   UUID item URLs) permanently redirect to the new spine so existing shared
   links survive. Stale item slugs redirect to the canonical key.
 - **No reserved-slug migration** is needed, thanks to `~`.
+- **Greenfield and unlaunched apps keep NO redirect stubs.** "301 forever" exists
+  only to protect real external links. An app with no pre-existing shared links
+  (unlaunched, or never on the old scheme) adopts the spine directly and deletes
+  the old route trees outright, rather than carrying dead passthrough/redirect
+  stubs. Do not leave legacy scaffolding behind where nothing links to it.
 
 ---
 
