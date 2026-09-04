@@ -34,7 +34,13 @@ tests/
 scripts/
 ```
 
-Prefer small files. If a file is getting unwieldy, split it.
+**Keep files small and focused** - one cohesive responsibility per file. Treat
+**~500 lines** as a prompt to review a file for splitting, and **~1000+ lines** as a
+strong signal it is doing too much: split it into a directory module grouped by
+concern (e.g. `editor/` with `gizmo.rs`, `inspector.rs`, `toolbar.rs`), not into
+arbitrary chunks. These are review triggers, not hard caps - a genuinely cohesive
+file may run longer - but a multi-thousand-line file almost never is. Generated
+files, snapshots, and lockfiles are exempt.
 
 ## Comments
 
