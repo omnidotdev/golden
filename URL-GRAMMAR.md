@@ -64,18 +64,33 @@ owned by this grammar.
 3. **User-minted slugs are flat under the handle.** `/@acme/my-board`, not
    `/@acme/projects/my-board`. The resource type is implied by position.
 
-4. **Admin routes live behind the `~` sentinel.** `/@acme/~/settings`,
-   `/@acme/~/members`, `/@acme/~/billing`. `~` means "the workspace's own
-   system area" (Unix `~` = home; Bitbucket `~user`). It is an RFC 3986
-   unreserved character (safe unencoded everywhere) and is **not** a TanStack
-   Router token; if a raw `~` directory ever confuses the route generator,
-   escape it as `[~]`. The sentinel applies **uniformly at every resource
-   level**: a resource nested under the handle keeps its own admin behind `~`
-   too (`/@acme/roadmap/~/settings`), never flat (`/@acme/roadmap/settings`).
-   One rule, no exceptions. Reserving `~` at each level up front is the cheap,
-   reversible move: it costs a slightly longer admin URL (which nobody shares)
-   and guarantees no future admin route or free-form child slug ever forces a
-   link-breaking migration to carve the sentinel in later.
+4. **Admin routes live behind the `~` sentinel, at every level that admits
+   user-minted flat siblings.** `/@acme/~/settings`, `/@acme/~/members`,
+   `/@acme/~/billing`. `~` means "the workspace's own system area" (Unix `~` =
+   home; Bitbucket `~user`). It is an RFC 3986 unreserved character (safe
+   unencoded everywhere) and is **not** a TanStack Router token; if a raw `~`
+   directory ever confuses the route generator, escape it as `[~]`.
+
+   The sentinel exists to resolve exactly one collision: a fixed admin route vs a
+   user-named flat sibling at the same level (Layer 3). So apply it at each level
+   that has such siblings, and omit it at a level whose children are **entirely
+   code-owned** (a namespaced collection plus fixed pages), where no collision
+   can occur. A resource that itself admits free-form user-named children keeps
+   its own admin behind `~` (`/@acme/roadmap/~/settings` when a roadmap holds
+   user-named items); a resource whose children are all code-owned does not
+   (`/@acme/repo/settings` is fine, because a repo's children are namespaced,
+   e.g. `services/*`, not free-form). This keeps the sentinel off the URLs people
+   actually share (a resource's own settings link) while still guaranteeing no
+   blocklist and no collision. Adding `~` to a level later, should it ever start
+   admitting user-named children, is a no-redirect change (admin URLs are never
+   shared), so omitting it where unneeded is safe and reversible.
+
+   > **Fractal profile (worked example).** A project's children are a namespaced
+   > `services/` collection plus fixed pages, so the project level is code-owned
+   > and takes no sentinel: `/@acme/aurian`, `/@acme/aurian/settings`,
+   > `/@acme/aurian/services/api`. Only the workspace level admits user-named flat
+   > siblings (projects vs `billing`/`members`), so `~` lives there alone:
+   > `/@acme/~/billing`. See `fractal-app/src/lib/workspace/routeScheme.ts`.
 
 5. **Items carry a self-describing key.** `/@acme/my-board/API-42-login-bug`,
    where `API-42` (prefix + per-project number) is the canonical key and the
