@@ -29,7 +29,18 @@ Canonical rules for AI agents working in Omni codebases. See [STYLEGUIDE.md](./S
 - Follow Extended Conventional Commits (ECC) per [STYLEGUIDE.md#git](./STYLEGUIDE.md#git)
 - Never add `Co-Authored-By` lines to commits
 - Default branch: `master`
-- Breaking changes do not require a major semver bump in changesets
+
+## Changesets and changelogs
+
+Every repo that ships something people use records its user-facing changes with [Changesets](https://github.com/changesets/changesets) and releases through the Changesets release workflow. Changelog history cannot be reconstructed later, and release tags mark exactly what shipped when (rollbacks, incident timelines, public release notes), so start on day one, even while a product is private.
+
+- **In scope**: product apps (web, desktop, mobile), product APIs and services, packages and SDKs (npm or git-dependency), CLIs. When unsure, it is in scope. **Exempt**: IaC (`infra`), stack metarepos, and content/meta repos (`golden`, `plans`, docs content)
+- **Setup** (every in-scope repo): `.changeset/config.json` whose changelog `repo` points at the repo itself, plus `.github/workflows/release.yml`. Copy the template that matches: `template-typescript-library` for published packages, `template-tanstack-start` / `template-elysia` for private apps and services (`privatePackages.tag: true` tags the release, nothing is published). A `.changeset/` directory without a release workflow (or one pointing at another repo) is a gap: close it when you find it
+- **When to add one**: in the same PR as any change a user, developer, or operator would notice (features, fixes, behavior, API shape, UI copy, performance, security fixes). Skip it for docs-only, test-only, CI, and refactors or dependency bumps with no behavior change
+- **Never a CI gate**: a missing changeset must not fail a check. It is a review expectation, not a blocker, so docs or chore PRs (and outside contributors) are never stuck
+- **Write it for the product's users**, as it would read in public release notes: what changed and why it matters, in plain language and the impersonal voice. No internal service names, infra, file paths, or ticket links. For security fixes, describe the effect ("Tightened access to tracked links"), never an exploit recipe
+- **Bump**: `patch` for fixes, `minor` for features. Breaking changes do not require a major bump; call them out in the changeset body
+- **Never release by hand**: no hand-edited versions, `CHANGELOG.md` entries, or tags, and no manual `npm publish`. A release happens only by merging the "version packages" PR the workflow opens
 
 ## Pull Requests
 
