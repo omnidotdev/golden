@@ -127,6 +127,19 @@ Any destructive or irreversible user action must be guarded by an explicit confi
 - This is UX, not authorization: still enforce the actual permission server-side
 - When adding any new destructive action, wire the confirmation in the same change; do not ship the unguarded action first
 
+## Empty states
+
+An empty state is a starting point, never a dead end. Every empty list, table, or panel must tell the user what belongs there and hand them the control that fills it.
+
+- **Carry the action, don't describe it.** When the user can resolve the empty state, render the action as a real control: a button that opens the create form, or a link to the page where it happens. Copy that names another surface without linking to it ("Use a future send time in Compose") is a defect
+- **Lead with the missing prerequisite.** If the action needs something that does not exist yet (a broadcast needs an audience and a verified domain), point at that first, so the user is never sent into a form they cannot complete
+- **"Nothing yet" is not "nothing matches".** When a search or filter is active, say so and offer "Clear filters" instead of the first-run copy
+- **Gated states link to the upgrade path**, not just a sentence saying a plan is required
+- **Respect permissions.** Do not offer an action the viewer cannot take; say who can
+- **Passive states may omit the action.** Lists the system fills on its own (suppressions, audit events) explain what will populate them; link to the docs or settings that control them when one exists
+- **Errors are not empty states.** A failed load shows a generic, actionable message with a retry, never the empty-state copy and never a raw error
+- Use the product's shared `EmptyState` primitive with its action slot (e.g. herald-app `src/components/EmptyState.tsx`, `action` / `secondaryAction`); do not hand-roll one per page
+
 ## CloudEvents
 
 All inter-service events follow the [CloudEvents](https://cloudevents.io) spec, routed through Vortex via `@omnidotdev/providers`.
