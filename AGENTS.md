@@ -140,6 +140,17 @@ An empty state is a starting point, never a dead end. Every empty list, table, o
 - **Errors are not empty states.** A failed load shows a generic, actionable message with a retry, never the empty-state copy and never a raw error
 - Use the product's shared `EmptyState` primitive with its action slot (e.g. herald-app `src/components/EmptyState.tsx`, `action` / `secondaryAction`); do not hand-roll one per page
 
+## Form controls and responsive layout
+
+Every UI must look finished at phone width and use the design system's controls, never browser defaults.
+
+- **No raw `<select>`.** Use Thornberry's `NativeSelect` (`@omnidotdev/thornberry/native-select`) for plain form choices, or Thornberry's `Select` when options need custom rendering. An unstyled native dropdown next to styled inputs is a defect
+- **Use the shared input primitives** for text inputs, textareas, checkboxes, and switches; don't hand-roll a per-page `inputClass`
+- **Rows wrap.** Any horizontal row of controls (filters, rule builders, form rows, toolbars, header actions) uses `flex-wrap` with a gap, and its children are `min-w-0` so they can shrink. No fixed widths inside flex rows unless the row wraps
+- **Long values never overflow.** Emails, URLs, ids, keys, DNS records, and other unbroken strings get `break-all` or `truncate` (with the full value available, e.g. a title or copy button). Tables sit in an `overflow-x-auto` wrapper; dialogs never exceed the viewport
+- **Check at 375px and desktop width** before shipping a UI change
+- **Form values must be what users expect to read.** Never show a half-parsed value (e.g. `Name <local` from splitting `Name <local@domain>` on `@`): parse structured values properly and split them into labeled fields
+
 ## CloudEvents
 
 All inter-service events follow the [CloudEvents](https://cloudevents.io) spec, routed through Vortex via `@omnidotdev/providers`.
