@@ -254,8 +254,11 @@ const classifyAdapter = (content: string, file: string): Finding[] => {
     });
   }
 
-  // bespoke open-state (the shell owns open state and the mod+k hotkey)
-  if (/onOpenChange\s*=/.test(content) || /\bopen=\{/.test(content)) {
+  // bespoke open-state (the shell owns open state and the mod+k hotkey). Only
+  // the palette shell's own props count: a sibling ShortcutsDialog the palette
+  // opens is controlled on purpose
+  const shellTags = content.match(/<CommandPalette\w*\b[^>]*>/g) ?? [];
+  if (shellTags.some((tag) => /\b(?:open|onOpenChange)=\{/.test(tag))) {
     findings.push({
       rule: "bespoke-open-state",
       level: "warn",
