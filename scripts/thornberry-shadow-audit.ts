@@ -22,6 +22,10 @@
  *   bun scripts/thornberry-shadow-audit.ts --path .      # audit one service (pre-commit)
  *   OMNI_ROOT=/path/to/omni bun scripts/thornberry-shadow-audit.ts
  *
+ * A deliberate exception opts out with a marker comment anywhere in the file,
+ * stating why, e.g. `// thornberry-shadow-audit-ignore: published library
+ * ships self-contained prefixed styles`. Exemptions are listed, not hidden.
+ *
  * The fleet root defaults to the parent of this repo (this repo lives at
  * `<omni>/golden`), and can be overridden with OMNI_ROOT. The thornberry
  * component list is read from `<omni>/thornberry`, so new components are picked
@@ -107,6 +111,8 @@ interface ServiceReport {
   service: string;
   dir: string;
   shadows: Shadow[];
+  /** Files exempted with an ignore marker, with the stated reason */
+  exempt: { file: string; reason: string }[];
   hotkeys: HotkeyCoverage | null;
 }
 
@@ -214,6 +220,7 @@ const auditService = (
   const contents = new Map(files.map((f) => [f, read(f)]));
 
   const shadows = new Map<string, Shadow>();
+  const exempt: ServiceReport["exempt"] = [];
   for (const file of files) {
     // primitive copies live in `ui/` directories, or anywhere under
     // `components/` with the registry's lowercase kebab-case filename (app
@@ -231,6 +238,19 @@ const auditService = (
     const isTest = /\.(test|spec|stories)\.tsx?$/.test(file);
     const existing = shadows.get(key);
     if (existing && isTest) continue;
+
+    // a deliberate, documented exception (e.g. a published library that must
+    // ship self-contained, prefixed styles) opts out with a marker comment
+    const marker = (contents.get(file) ?? "").match(
+      /thornberry-shadow-audit-ignore:\s*(.+)/,
+    );
+    if (marker) {
+      exempt.push({
+        file: relative(OMNI_ROOT, file),
+        reason: marker[1]!.replace(/\s*\*\/\s*$/, "").trim(),
+      });
+      continue;
+    }
 
     const rawStem = componentStem(file);
     // a relative or `@/` alias specifier ending in the file's own name and
@@ -279,6 +299,7 @@ const auditService = (
     shadows: [...shadows.values()].sort((a, b) =>
       a.component.localeCompare(b.component),
     ),
+    exempt,
     hotkeys: hotkeyCoverage,
   };
 };
@@ -314,9 +335,11 @@ const listServices = (): string[] => {
 const components = loadThornberryComponents();
 const hotkeys = loadGlobalHotkeys();
 
-const reports = (SINGLE_PATH ? [SINGLE_PATH] : listServices())
+const audited = (SINGLE_PATH ? [SINGLE_PATH] : listServices())
   .map((dir) => auditService(dir, components, hotkeys))
-  .filter((r): r is ServiceReport => r !== null)
+  .filter((r): r is ServiceReport => r !== null);
+const exemptions = audited.flatMap((r) => r.exempt);
+const reports = audited
   .filter((r) => r.shadows.length > 0 || (r.hotkeys?.missing.length ?? 0) > 0);
 
 const shadowReports = reports.filter((r) => r.shadows.length > 0);
@@ -333,6 +356,7 @@ if (EMIT_JSON) {
       {
         omniRoot: OMNI_ROOT,
         globalHotkeys: hotkeys,
+        exemptions,
         totals: {
           services: shadowReports.length,
           shadows: totalShadows,
@@ -412,6 +436,12 @@ if (hotkeyGaps.length > 0) {
   for (const r of hotkeyGaps.sort((a, b) => a.dir.localeCompare(b.dir))) {
     console.log(`  ${bold(r.service)} ${dim(`missing: ${r.hotkeys!.missing.join(", ")}`)}`);
   }
+  console.log("");
+}
+
+if (exemptions.length > 0) {
+  console.log(bold("Exempt (ignore marker)"));
+  for (const e of exemptions) console.log(`  ${dim(e.file)}: ${e.reason}`);
   console.log("");
 }
 
