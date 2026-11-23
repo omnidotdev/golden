@@ -215,9 +215,13 @@ const auditService = (
 
   const shadows = new Map<string, Shadow>();
   for (const file of files) {
-    // only `ui/` directories hold primitive copies; domain components that
-    // happen to share a name (e.g. a pricing `Card`) live elsewhere
-    if (basename(dirname(file)) !== "ui") continue;
+    // primitive copies live in `ui/` directories, or anywhere under
+    // `components/` with the registry's lowercase kebab-case filename (app
+    // components use camel or Pascal case, so a domain `Card.tsx` is not one)
+    const inUi = basename(dirname(file)) === "ui";
+    const registryNamed =
+      file.includes("/components/") && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(componentStem(file));
+    if (!inUi && !registryNamed) continue;
     const stem = toKebab(componentStem(file));
     const component = components.has(stem) ? stem : ALIASES[stem];
     if (!component || !components.has(component)) continue;
@@ -229,7 +233,12 @@ const auditService = (
     if (existing && isTest) continue;
 
     const rawStem = componentStem(file);
-    const importRe = new RegExp(`["'][^"']*/ui/${rawStem}(?:\\.tsx?)?["']`);
+    // a relative or `@/` alias specifier ending in the file's own name and
+    // directory, never the thornberry package path
+    const dirName = basename(dirname(file));
+    const importRe = new RegExp(
+      `["'](?:\\.{1,2}|@)/(?:[^"']*/)?${dirName}/${rawStem}(?:\\.tsx?)?["']|["']\\./${rawStem}(?:\\.tsx?)?["']`,
+    );
     const importers = files.filter(
       (f) =>
         f !== file &&
@@ -287,8 +296,8 @@ const listServices = (): string[] => {
       continue;
     }
     for (const service of services.sort()) {
-      // hidden entries are scratch worktrees, not services
-      if (service.startsWith(".")) continue;
+      // hidden entries are scratch worktrees; thornberry itself is the source
+      if (service.startsWith(".") || service === "thornberry") continue;
       const dir = join(servicesDir, service);
       try {
         if (statSync(dir).isDirectory()) dirs.push(dir);
