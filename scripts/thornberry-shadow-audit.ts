@@ -63,7 +63,6 @@ const THORNBERRY_COMPONENTS_DIR = join(
 const ALIASES: Record<string, string> = {
   "alert-dialog": "confirm-dialog",
   "dropdown-menu": "menu",
-  dropdown: "menu",
   "context-menu": "menu",
   drawer: "sheet",
   "input-otp": "pin-input",
