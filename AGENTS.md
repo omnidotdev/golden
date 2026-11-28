@@ -146,6 +146,15 @@ Changes that delete data, touch credentials or tenant isolation, or alter backup
 - **Live-state regression review:** check the change against the real objects it will act on (every live service, policy, database, and secret it touches, read-only) and name anything that would break, rather than reasoning from the code alone
 - Fix what the review finds and review again until it is clean. Roll out one step at a time (permissions before the code that needs them) and verify health after each step
 
+### Revoking credentials
+
+Revoking a credential can take down far more than the one value you meant to kill. Before any revoke, rotation, or deletion of a token, key, or grant:
+
+- **Map the grant, not just the value.** Find everything that shares the credential's issuer: the same OAuth app and user, the same GitHub App installation, the same account-level token. Checking that the exact value is not reused elsewhere is not enough
+- **Never revoke an OAuth-app token** (GitHub `gho_`, such as a GitHub CLI token) through the credentials revoke API or the authorized apps page. That ends the whole authorization, so every token the app ever issued to that user dies at once (found 2026-11-28: revoking one old GitHub CLI token signed out the owner's local `gh` and killed three CLI tokens stored in IaC). To retire one, remove it from every config and let it lapse
+- **State the blast radius and get explicit approval** before revoking anything that is not a credential you just minted yourself
+- **Never store CLI or OAuth-app tokens in IaC or cluster config.** Use GitHub App installation tokens minted per use, or fine-grained tokens where an App cannot work
+
 ## Empty states
 
 An empty state is a starting point, never a dead end. Every empty list, table, or panel must tell the user what belongs there and hand them the control that fills it.
