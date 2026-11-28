@@ -127,6 +127,25 @@ Any destructive or irreversible user action must be guarded by an explicit confi
 - This is UX, not authorization: still enforce the actual permission server-side
 - When adding any new destructive action, wire the confirmation in the same change; do not ship the unguarded action first
 
+### Automated deletion (platform code)
+
+Code that deletes data on its own (retention, purges, garbage collection, lifecycle rules, cleanup scripts) follows the same principle without a dialog to lean on: when in doubt, keep the data.
+
+- **Delete only what a verified backup covers.** A project purge, volume release, or cleanup removes data only when a backup that captured all of it has succeeded and been verified in storage (the object exists and is not empty). Anything not provably covered is kept and labeled with the reason, so a later cleanup can archive it deliberately. Leaking storage is a cost; losing data is unrecoverable
+- **Never forget what you failed to delete.** If a delete is refused or errors, keep the record that tracks the object and retry. Dropping the record while the object survives orphans it: it is no longer counted, shown, or cleaned up, and it outlives its stated retention
+- **Retention always keeps the newest good backup**, whatever its age or count, so a paused or sleeping resource never ages out its last recovery point
+- **Check the storage provider's real semantics** before writing retention or lifecycle logic. Locks, versioning, delete markers, and error codes differ between providers; read the provider's docs and verify against the live bucket rather than assuming S3 behavior (found 2026-11-27: Fractal retention assumed S3-style delete markers on an R2 bucket with a 14-day lock, so every refused delete orphaned its backup for 90 days)
+- **Dry-run first.** One-off cleanup scripts default to a dry run that prints what they would delete per owner (counts and sizes), and only delete with an explicit `--apply` after a human reviews the numbers
+- **Back up before mutating production data**, and keep the backup until the change is verified
+
+### Review before shipping risky changes
+
+Changes that delete data, touch credentials or tenant isolation, or alter backup and restore get a separate review before they ship, by a reviewer (person or agent) that did not write the change and is given the code, not the author's conclusions.
+
+- **Data-loss review:** look for any path where data is removed before it is safely captured: races, swallowed errors, retries, restarts mid-operation, and every entry point (UI, API, admin, direct cluster access)
+- **Live-state regression review:** check the change against the real objects it will act on (every live service, policy, database, and secret it touches, read-only) and name anything that would break, rather than reasoning from the code alone
+- Fix what the review finds and review again until it is clean. Roll out one step at a time (permissions before the code that needs them) and verify health after each step
+
 ## Empty states
 
 An empty state is a starting point, never a dead end. Every empty list, table, or panel must tell the user what belongs there and hand them the control that fills it.
